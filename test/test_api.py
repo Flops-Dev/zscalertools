@@ -4,10 +4,12 @@ from zscalertools import api
 import logging
 import yaml
 import unittest
+from pathlib import Path
 
 logging.basicConfig(level=logging.DEBUG)
 
-stream = open('test_api.yml', yaml.SafeLoader)
+stream = open(Path(__file__).parent / 'test_api.yml', 'r')
+config = yaml.load(stream, yaml.SafeLoader)
 
 class TestSequenceFunctions(unittest.TestCase):
   def setUp(self):
