@@ -1,0 +1,9 @@
+README.md
+setup.py
+zscalertools/__init__.py
+zscalertools/api.py
+zscalertools.egg-info/PKG-INFO
+zscalertools.egg-info/SOURCES.txt
+zscalertools.egg-info/dependency_links.txt
+zscalertools.egg-info/requires.txt
+zscalertools.egg-info/top_level.txt
