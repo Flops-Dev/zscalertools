@@ -1,5 +1,7 @@
 README.md
 setup.py
+test/__init__.py
+test/test_api.py
 zscalertools/__init__.py
 zscalertools/api.py
 zscalertools.egg-info/PKG-INFO

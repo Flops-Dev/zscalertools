@@ -6,7 +6,7 @@ Home-page: https://github.mmm.com/test
 Author: Bryce Myers
 Author-email: bdmyers@mmm.com
 License: UNKNOWN
-Description: # Test Package of ZIA API
+Description: Package of Zscaler Tools
         
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3

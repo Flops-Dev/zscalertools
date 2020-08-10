@@ -11,8 +11,8 @@ class TestSequenceFunctions(unittest.TestCase):
     self.api = api.zia('admin.zscalerbeta.net', 'test_api@mmm.com', 'e6T6CC#!Qy!6m4bJR9G', '3JrrIbUVDrLr')
     
   def test_login(self):
-    self.api.login()
-    self.assertEqual(self.api, True)
+    login = self.api.login()
+    self.assertEqual(login['authType'], 'ADMIN_LOGIN')
 
     
 if __name__ == "__main__":
