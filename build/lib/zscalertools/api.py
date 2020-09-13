@@ -149,12 +149,10 @@ class zia:
 
   def get_status(self):
     api_path = '/status'
-    method = 'GET'
     
     return self._handle_response(self.session.get(self._url(api_path)))
   
   def activate_status(self):
     api_path = '/status/activate'
-    method = 'POST'
 
-    return self._handle_response(self.session.post(self._url(api_path))
+    return self._handle_response(self.session.post(self._url(api_path)))

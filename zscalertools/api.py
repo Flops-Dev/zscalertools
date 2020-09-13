@@ -14,11 +14,60 @@ zapi_adapter = HTTPAdapter(max_retries=3)
 
 logger = logging.getLogger(__name__)
 
-class exception(Exception):
-  pass
-
 class zia:
-  """Zscaler Internet Security API Library"""
+  """
+  Class to represent Zscaler Internet Security Instance
+  
+  Attributes
+  ----------
+  cloud : str
+    a string containing the zscaler cloud to use
+  username : str
+    the username of the account to connect to the zscaler cloud
+  password : str
+    the password for the username string
+  apikey : str
+    apikey needed to connect to zscaler cloud
+    
+  Methods
+  -------
+  login()
+    Attempts to create a web session to Zscaler API
+  logout()
+    Delete's existing web session to Zscaler API
+  get_users(name=None, dept=None, group=None, page=None, pageSize=None)
+    Gets a list of all users and allows user filtering by name, department, or group
+  get_user(id)
+    Gets the user information for the specified ID
+  get_groups(search=None, page=None, pageSize=None)
+    Gets a list of groups
+  get_group(id)
+    Gets the group for the specified ID
+  get_departments(search=None, name=None, page=None, pageSize=None)
+    Gets a list of departments
+  get_department(id)
+    Gets the department for the specified ID
+  add_user(user_object)
+    Adds a new user
+  update_user(id, user_object)
+    Updates the user information for the specified ID
+  bulk_delete_users(ids=[])
+    Bulk delete users up to a maximum of 500 users per request
+  get_status()
+    Gets the activation status for a configuration change
+  activate_status()
+    Activates configuration changes
+  get_locations(search=None, sslScanEnabled=None, xffEnabled=None, authRequired=None, bwEnforced=None, page=None, pageSize=None)
+    Gets information on locations
+  get_location(id)
+    Gets the location information for the specified ID
+  add_location(location_object)
+    Adds new locations and sub-locations
+  get_locations_lite(includeSubLocations=None, includeParentLocations=None, sslScanEnabled=None, search=None, page=None, pageSize=None)
+    Gets a name and ID dictionary of locations
+  update_location(id, location_object)
+    Updates the location and sub-location information for the specified ID
+  """
 
   def __init__(self, cloud, username, password, apikey):
 
@@ -52,6 +101,10 @@ class zia:
 
     return self.url + path
   
+  def _append_url_query(self, current_path, attribute, value):
+    
+    return "{}&{}={}".format(current_path, attribute, value)
+  
   def _handle_response(self, response):
     try:
       if response.ok:
@@ -62,7 +115,6 @@ class zia:
       logger.error("Response - {} - {}".format(response.status_code, response.text))
       raise
     
-       
   def login(self):
     logger.debug("login module called")
     api_path = '/authenticatedSession'
@@ -79,7 +131,6 @@ class zia:
 
     return self._handle_response(self.session.post(self._url(api_path), data=data))
   
-  
   def logout(self):
     logger.debug("logout module called")
     api_path = '/authenticatedSession'
@@ -87,20 +138,32 @@ class zia:
     return self._handle_response(self.session.delete(self._url(api_path)))
 
   def get_users(self, name=None, dept=None, group=None, page=None, pageSize=None):
-    api_path = '/users'
-    query = '?'
+    api_path = '/users?'
+    if name:
+      api_path = self._append_url_query(api_path, 'name', name)
+    if dept:
+      api_path = self._append_url_query(api_path, 'dept', dept)
     if group:
-      api_path = api_path + "{}group={}".format(query, group)
-      query = '&'
+      api_path = self._append_url_query(api_path, 'page', page)
     if pageSize:
-      api_path = api_path + "{}pageSize={}".format(query, pageSize)
+      api_path = self._append_url_query(api_path, 'pageSize', pageSize)
 
     return self._handle_response(self.session.get(self._url(api_path)))
 
+  def get_user(self, id):
+    api_path = '/users/{}'.format(id)
+
+    return self._handle_response(self.session.get(self._url(api_path)))
+  
   def get_groups(self, search=None, page=None, pageSize=None):
     logger.debug("get_groups module called")
     api_path = '/groups'
     
+    return self._handle_response(self.session.get(self._url(api_path)))
+
+  def get_group(self, id):
+    api_path = '/group/{}'.format(id)
+
     return self._handle_response(self.session.get(self._url(api_path)))
 
   def get_departments(self, name=None, page=None, pageSize=None):
@@ -111,33 +174,22 @@ class zia:
     
     return self._handle_response(self.session.get(self._url(api_path)))
   
-  def get_user(self, id):
-    api_path = '/users/{}'.format(id)
+  def get_department(self, id):
+    api_path = '/departments/{}'.format(id)
 
     return self._handle_response(self.session.get(self._url(api_path)))
   
-  def add_user(self, details):
+  def add_user(self, user_object):
     api_path = '/users/'
-    data = json.dumps(details)
+    data = json.dumps(user_object)
     
     return self._handle_response(self.session.post(self._url(api_path), data=data))
   
-  def update_user(self, id, details):
+  def update_user(self, id, user_object):
     api_path = '/users/{}'.format(id)
-    data = json.dumps(details)
+    data = json.dumps(user_object)
 
     return self._handle_response(self.session.put(self._url(api_path), data=data))
-
-  def get_users(self, name=None, dept=None, group=None, page=None, pageSize=None):
-    api_path = '/users'
-    query = '?'
-    if group:
-      api_path = api_path + "{}group={}".format(query, group)
-      query = '&'
-    if pageSize:
-      api_path = api_path + "{}pageSize={}".format(query, pageSize)
-
-    return self._handle_response(self.session.get(self._url(api_path)))
 
   def bulk_delete_users(self, ids=[]):
     api_path = '/users/bulkDelete'
@@ -149,12 +201,77 @@ class zia:
 
   def get_status(self):
     api_path = '/status'
-    method = 'GET'
     
     return self._handle_response(self.session.get(self._url(api_path)))
   
   def activate_status(self):
     api_path = '/status/activate'
-    method = 'POST'
 
-    return self._handle_response(self.session.post(self._url(api_path))
+    return self._handle_response(self.session.post(self._url(api_path)))
+  
+  def get_locations(self, search=None, sslScanEnabled=None, xffEnabled=None, authRequired=None, bwEnforced=None, page=None, pageSize=None):
+    api_path = '/locations?'
+    
+    if search:
+      api_path = self._append_url_query(api_path, 'search', search)
+    if sslScanEnabled:
+      api_path = self._append_url_query(api_path, 'sslScanEnabled', sslScanEnabled)
+    if xffEnabled:
+      api_path = self._append_url_query(api_path, 'xffEnabled', xffEnabled)
+    if authRequired:
+      api_path = self._append_url_query(api_path, 'authRequired', authRequired)
+    if bwEnforced:
+      api_path = self._append_url_query(api_path, 'bwEnforced', bwEnforced)
+    if page:
+      api_path = self._append_url_query(api_path, 'page', page)
+    if pageSize:
+      api_path = self._append_url_query(api_path, 'pageSize', pageSize)
+
+    return self._handle_response(self.session.get(self._url(api_path)))
+    
+  def get_location(self, id):
+    api_path = '/locations/{}'.format(id)
+
+    return self._handle_response(self.session.get(self._url(api_path)))
+  
+  def add_location(self, location_object):
+    api_path = '/locations'
+    data = json.dumps(location_object)
+    
+    return self._handle_response(self.session.post(self._url(api_path), data=data))
+  
+  def get_locations_lite(self, includeSubLocations=None, includeParentLocations=None, sslScanEnabled=None, search=None, page=None, pageSize=None):
+    api_path = "/locations/lite" 
+    
+    return self._handle_response(self.session.get(self._url(api_path)))
+  
+  def update_location(self, id, location_object):
+    api_path = '/locations/{}'.format(id)
+    data = json.dumps(location_object)
+
+    return self._handle_response(self.session.put(self._url(api_path), data=data))
+
+class helper():
+  """
+  Class for ZIA to help with function calls
+  """
+  
+  def __init__(self, api_object):
+    logger.debug('calling init method called for helper class')
+    try:
+      if isinstance(api_object, zia):
+        logger.error("YAYYYA ITS RIGHT")
+        self.api = api_object
+      else:
+        raise
+    except:
+      raise
+      
+  
+  def pull_all_zia_data(self):
+      logger.info("Zscaler Helper -  Pulling All User/Group Data")
+      zscaler_users = self.api.get_users(pageSize=200000)
+      zscaler_departments = self.api.get_departments(pageSize=10000)
+      zscaler_groups = self.api.get_groups()
+      logger.info("Zscaler API - Data Pull Complete")
+      return zscaler_users, zscaler_departments, zscaler_groups
