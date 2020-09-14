@@ -5,6 +5,7 @@ import datetime
 import re
 import json
 import requests
+from functools import wraps
 from requests.adapters import HTTPAdapter
 from requests.exceptions import ConnectionError, HTTPError
 
@@ -13,6 +14,10 @@ import logging
 zapi_adapter = HTTPAdapter(max_retries=3)
 
 logger = logging.getLogger(__name__)
+
+class ZiaThrottleException(Exception):
+  def __init__(self, text):
+    self.text = text
 
 class zia:
   """
@@ -102,8 +107,43 @@ class zia:
     return self.url + path
   
   def _append_url_query(self, current_path, attribute, value):
-    
-    return "{}&{}={}".format(current_path, attribute, value)
+    if current_path.endswith('?'):
+      return "{}{}={}".format(current_path, attribute, value)
+    else:
+      return "{}&{}={}".format(current_path, attribute, value)
+
+  def retry(exceptions, tries=4, delay=3, backoff=2):
+    """
+    Retry calling the decorated function using an exponential backoff.
+
+    Args:
+        exceptions: The exception to check. may be a tuple of
+            exceptions to check.
+        tries: Number of times to try (not retry) before giving up.
+        delay: Initial delay between retries in seconds.
+        backoff: Backoff multiplier (e.g. value of 2 will double the delay
+            each retry).
+    """
+    def deco_retry(f):
+      @wraps(f)
+      def f_retry(*args, **kwargs):
+        mtries, mdelay = tries, delay
+        while mtries > 1:
+          try:
+            return f(*args, **kwargs)
+          except ZiaThrottleException as e:
+            retry_after = int(json.loads(e.text)['Retry-After'][0]) + 1
+            logger.info("{}, Retrying in {} seconds...".format(e, retry_after))
+            time.sleep(retry_after)
+            mtries -= 1
+          except exceptions as e:
+            logger.info("{}, Retrying in {} seconds...".format(e, mdelay))
+            time.sleep(mdelay)
+            mtries -= 1
+            mdelay *= backoff
+        return f(*args, **kwargs)
+      return f_retry  # true decorator
+    return deco_retry
   
   def _handle_response(self, response):
     try:
@@ -112,8 +152,11 @@ class zia:
       else:
         response.raise_for_status()
     except HTTPError as e:
-      logger.error("Response - {} - {}".format(response.status_code, response.text))
-      raise
+      if response.status_code == 429:
+        raise ZiaThrottleException(response.text)
+      else:
+        logger.error("Response - {} - {}".format(response.status_code, response.text))
+        raise
     
   def login(self):
     logger.debug("login module called")
@@ -136,7 +179,8 @@ class zia:
     api_path = '/authenticatedSession'
 
     return self._handle_response(self.session.delete(self._url(api_path)))
-
+  
+  @retry(Exception, tries=3)
   def get_users(self, name=None, dept=None, group=None, page=None, pageSize=None):
     api_path = '/users?'
     if name:
@@ -149,6 +193,7 @@ class zia:
       api_path = self._append_url_query(api_path, 'pageSize', pageSize)
 
     return self._handle_response(self.session.get(self._url(api_path)))
+    #return self.session.get(self._url(api_path))
 
   def get_user(self, id):
     api_path = '/users/{}'.format(id)
@@ -250,28 +295,16 @@ class zia:
     data = json.dumps(location_object)
 
     return self._handle_response(self.session.put(self._url(api_path), data=data))
-
-class helper():
-  """
-  Class for ZIA to help with function calls
-  """
   
-  def __init__(self, api_object):
-    logger.debug('calling init method called for helper class')
-    try:
-      if isinstance(api_object, zia):
-        logger.error("YAYYYA ITS RIGHT")
-        self.api = api_object
-      else:
-        raise
-    except:
-      raise
-      
+  def test_pull_data(self):
+    logger.error("In the function")
+    zscaler_users = self.get_users(pageSize=10)
   
   def pull_all_zia_data(self):
       logger.info("Zscaler Helper -  Pulling All User/Group Data")
-      zscaler_users = self.api.get_users(pageSize=200000)
-      zscaler_departments = self.api.get_departments(pageSize=10000)
-      zscaler_groups = self.api.get_groups()
+      zscaler_users = self.get_users(pageSize=999999)
+      zscaler_departments = self.get_departments(pageSize=999999)
+      zscaler_groups = self.get_groups(pageSize=999999)
+      print("Users - {}, Deparments - {}, Groups - {}".format(len(zscaler_users), len(zscaler_departments), len(zscaler_groups)))
       logger.info("Zscaler API - Data Pull Complete")
       return zscaler_users, zscaler_departments, zscaler_groups
