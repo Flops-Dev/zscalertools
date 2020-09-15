@@ -3,7 +3,7 @@ Python Library used for interacting with Zscaler's public API
 
 How to install:
 ```
-pip install -- index-url https://test.pypi.org/simple/ zscalertools
+pip install --index-url https://test.pypi.org/simple/ zscalertools
 ```
 
 How to use:
