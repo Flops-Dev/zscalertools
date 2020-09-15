@@ -1,13 +1,26 @@
 Metadata-Version: 2.1
 Name: zscalertools
-Version: 0.0.2
+Version: 0.0.3
 Summary: Zscaler Tools
 Home-page: https://github.mmm.com/test2
 Author: Bryce Myers
 Author-email: bdmyers@mmm.com
 License: UNKNOWN
-Description: Package of Zscaler Tools
+Description: #Zscaler Tools
+        Python Library used for interacting with Zscaler's public API
         
+        How to install:
+        ```
+        pip install -- index-url https://test.pypi.org/simple/ zscalertools
+        ```
+        
+        How to use:
+        ```
+        import zscalertools
+        ztoolsinstance = zscalertools.api.zia('admin.zscalerbeta.net', 'test_api@user.com', 'password', 'Apikey')
+        
+        ztoolsinstance.get_users()
+        ```
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License

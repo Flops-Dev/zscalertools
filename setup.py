@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
   name="zscalertools",
-  version="0.0.2",
+  version="0.0.3",
   author="Bryce Myers",
   author_email="bdmyers@mmm.com",
   description="Zscaler Tools",
