@@ -1,3 +1,3 @@
-from .api import *
+from .zia import *
 
-__all__ = ['zia']
+__all__ = ['api']
