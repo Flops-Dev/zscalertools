@@ -58,7 +58,7 @@ def retry(exceptions, tries=4, delay=3, backoff=2):
     return f_retry  # true decorator
   return deco_retry
  
-class zia:
+class api:
   """
   Class to represent Zscaler Internet Security Instance
   

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from zscalertools import api
+from zscalertools import zia
 import logging
 import yaml
 import unittest
@@ -13,7 +13,7 @@ config = yaml.load(stream, yaml.SafeLoader)
 
 class TestSequenceFunctions(unittest.TestCase):
   def setUp(self):
-    self.api = api.zia(config['url'], config['username'], config['password'], config['cloud_api_key'])
+    self.api = zia.api(config['url'], config['username'], config['password'], config['cloud_api_key'])
     
   def test_login(self):
     login = self.api.login()
