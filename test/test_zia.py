@@ -18,7 +18,7 @@ class TestSequenceFunctions(unittest.TestCase):
   def test_login(self):
     login = self.api.login()
     self.assertEqual(login['authType'], 'ADMIN_LOGIN')
-
+    logout = self.api.logout()
     
 if __name__ == "__main__":
   unittest.main()
