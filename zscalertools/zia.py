@@ -113,7 +113,6 @@ class api:
     Updates the location and sub-location information for the specified ID
   pull_all_user_data()
     Pulls all users, departments and groups and returns 3 arrays
-    test
   """
 
   def __init__(self, cloud, username, password, apikey):
