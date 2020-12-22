@@ -16,8 +16,8 @@ ztoolsinstance.get_users()
 
   
   Attributes
-  ```
   ----------
+  ```
   cloud : str
     a string containing the zscaler cloud to use
   username : str
@@ -87,6 +87,8 @@ ztoolsinstance.get_users()
       Bulk delete locations up to a maximum of 100 users per request. The response returns the location IDs that were successfully deleted.
 
   Custom Methods
-  -------
+  --------------
+  ```
   pull_all_user_data()
     Pulls all users, departments and groups and returns 3 arrays (up to 999,999 entries a piece)
+  ```
