@@ -9,17 +9,47 @@ License: UNKNOWN
 Description: # Zscaler Tools
         Python Library used for interacting with Zscaler's public API
         
-        How to install:
+        ## General Information
+        This Python Library is being devloped to provide an easily usable interface with Zscaler API.  
+        > https://help.zscaler.com/zia/api
+        
+        Zscaler API Functions in this Library
+        - ZIA
+          - [x] Activation
+          - [ ] Admin Audit Logs
+          - [ ] Admin & Role Management
+          - [x] API Authentication
+          - [ ] Cloud Sandbox Report
+          - [ ] Firewall Policies
+          - [x] Location Management
+          - [ ] Security Policy Settings
+          - [ ] SSL Inspection Settings
+          - [ ] Traffic Forwarding
+          - [x] User Management
+          - [ ] URL Categories
+          - [ ] URL Filtering Policies
+          - [ ] User Authentication Settings
+        - ZPA
+          - API not released by Zscaler
+        
+        ## Features
+        - Manage Request Sessions to Zscaler API
+          - You do not need to explicitly call the login() function
+        - Manage Auto-Retry (3 retries per call)
+        - Manage 429 API Rate Limit Reponse
+          - Library will read response and wait for Rate Limit before continuing
+        
+        ## How to install:
         ```
-        pip install --index-url https://test.pypi.org/simple/ zscalertools
+        pip install zscalertools
         ```
         
-        How to use:
+        ## How to use:
         ```
-        from zscalertools import zia
-        ztoolsinstance = zia.api('admin.zscalerbeta.net', 'test_api@user.com', 'password', 'Apikey')
+        import zscalertools
+        ztools_zia_api = zscalertools.zia('admin.zscalerbeta.net', 'test_api@user.com', 'password', 'Apikey')
         
-        ztoolsinstance.get_users()
+        ztools_zia_api.get_users()
         ```
         
           
@@ -100,6 +130,11 @@ Description: # Zscaler Tools
           pull_all_user_data()
             Pulls all users, departments and groups and returns 3 arrays (up to 999,999 entries a piece)
           ```
+        
+        ## Contributing
+        Pull requests are welcome.  Initial development is focused on building out the rest of the library.
+        
+        Please make sure to update tests as appropriate.
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
