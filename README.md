@@ -1,4 +1,4 @@
-#Zscaler Tools
+# Zscaler Tools
 Python Library used for interacting with Zscaler's public API
 
 How to install:
@@ -14,9 +14,9 @@ ztoolsinstance = zia.api('admin.zscalerbeta.net', 'test_api@user.com', 'password
 ztoolsinstance.get_users()
 ```
 
-Class to represent Zscaler Internet Security Instance
   
   Attributes
+  ```
   ----------
   cloud : str
     a string containing the zscaler cloud to use
@@ -26,7 +26,7 @@ Class to represent Zscaler Internet Security Instance
     the password for the username string
   apikey : str
     apikey needed to connect to zscaler cloud
-    
+  ```
   Zscaler Methods
   ---------------
 
