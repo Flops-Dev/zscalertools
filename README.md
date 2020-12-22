@@ -3,7 +3,7 @@
 
 The Library is designed to manage login and session.  The tool will handle 401 and 429 errors returned by Zscaler API.
 
-In your project - you do not need to explicitly call the login() function or handle the 429 throttle response.
+> In your project - you do not need to explicitly call the login() function or handle the 429 throttle response.
 
 How to install:
 ```
