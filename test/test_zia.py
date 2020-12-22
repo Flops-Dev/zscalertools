@@ -16,18 +16,23 @@ class TestSequenceFunctions(unittest.TestCase):
   def setUp(self):
     self.api = zia.api(config['url'], config['username'], config['password'], config['cloud_api_key'])
     
-  def test_login(self):
+  def test_login_logout(self):
     login = self.api.login()
     self.assertEqual(login['authType'], 'ADMIN_LOGIN')
-    self.api.logout()
+    logout = self.api.logout()
+    self.assertEqual(logout['status'], 'success')
   
   def test_locations_lite(self):
-    locations = self.api.get_locations_lite()
-    print(locations)
+    locations_lite = self.api.get_locations_lite()
+    self.assertTrue('id', locations_lite)
 
   def test_locations(self):
     locations = self.api.get_locations()
-    print(locations)
-    
+    self.assertTrue('id', locations)
+    for location in locations:
+      if 'childCount' in location:
+        sub_location = self.api.get_sublocations(location['id'])
+        self.assertTrue('id', sub_location)
+
 if __name__ == "__main__":
   unittest.main()

@@ -131,11 +131,11 @@ class api:
       Deletes the location or sub-location for the specified ID
     buld_delete_locations(ids=[])
       Bulk delete locations up to a maximum of 100 users per request. The response returns the location IDs that were successfully deleted.
-      
+
   Custom Methods
   -------
   pull_all_user_data()
-    Pulls all users, departments and groups and returns 3 arrays
+    Pulls all users, departments and groups and returns 3 arrays (up to 999,999 entries a piece)
   """
 
   def __init__(self, cloud, username, password, apikey):
@@ -332,7 +332,7 @@ class api:
     return self._handle_response(self.session.get(self._url(api_path)))
   
   @retry(Exception, tries=3)
-  def get_sublocations(self, id, search=None, sslScanEnabled=None, xffEnabled=None, authRequired=None, bwEnforced=None, enforceAup=None, enableFirewall=None):
+  def get_sublocations(self, id, search=None, sslScanEnabled=None, xffEnabled=None, authRequired=None, bwEnforced=None, page=None, pageSize=None, enforceAup=None, enableFirewall=None):
     api_path = '/locations/{}/sublocations?'.format(id)
     
     if search:
