@@ -1,16 +1,23 @@
 # Zscaler Tools
-### Python Library used for interacting with Zscaler's public API
+Python Library used for interacting with Zscaler's public API
 
-The Library is designed to manage login and session.  The tool will handle 401 and 429 errors returned by Zscaler API.
+## General Information
+This Python Library is designed to provide an interface with Zscaler API.  
+https://help.zscaler.com/zia/api
 
-> In your project - you do not need to explicitly call the login() function or handle the 429 throttle response.
+## Features
+- Manage Request Sessions to Zscaler API
+  - You do not need to explicitly call the login() function
+- Manage Auto-Retry (3 retries per call)
+- Manage 429 API Rate Limit Reponse
+  - Library will read response and wait for Rate Limit before continuing
 
-How to install:
+## How to install:
 ```
-pip install --index-url https://test.pypi.org/simple/ zscalertools
+pip install zscalertools
 ```
 
-How to use:
+## How to use:
 ```
 import zscalertools
 ztools_zia_api = zscalertools.zia('admin.zscalerbeta.net', 'test_api@user.com', 'password', 'Apikey')
@@ -96,3 +103,8 @@ ztools_zia_api.get_users()
   pull_all_user_data()
     Pulls all users, departments and groups and returns 3 arrays (up to 999,999 entries a piece)
   ```
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
