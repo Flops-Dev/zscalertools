@@ -124,6 +124,6 @@ ztools_zia_api.get_users()
   ```
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome.  Initial development is focused on building out the rest of the library.
 
 Please make sure to update tests as appropriate.
