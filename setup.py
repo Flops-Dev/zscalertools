@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
   name="zscalertools",
-  version="0.0.3",
+  version="0.0.4",
   author="Bryce Myers",
   author_email="bdmyers@mmm.com",
   description="Zscaler Tools",
   long_description=long_description,
   long_description_content_type="text/markdown",
-  url="https://github.mmm.com/test2",
+  url="https://github.mmm.com/network-automation/zscalertools",
   packages=setuptools.find_packages(),
   classifiers=[
     "Programming Language :: Python :: 3",
