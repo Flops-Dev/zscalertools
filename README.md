@@ -2,8 +2,27 @@
 Python Library used for interacting with Zscaler's public API
 
 ## General Information
-This Python Library is designed to provide an interface with Zscaler API.  
-https://help.zscaler.com/zia/api
+This Python Library is being devloped to provide an easily usable interface with Zscaler API.  
+  https://help.zscaler.com/zia/api
+
+Zscaler API Functions in this Library
+- ZIA
+  - [x] Activation
+  - [ ] Admin Audit Logs
+  - [ ] Admin & Role Management
+  - [x] API Authentication
+  - [ ] Cloud Sandbox Report
+  - [ ] Firewall Policies
+  - [x] Location Management
+  - [ ] Security Policy Settings
+  - [ ] SSL Inspection Settings
+  - [ ] Traffic Forwarding
+  - [x] User Management
+  - [ ] URL Categories
+  - [ ] URL Filtering Policies
+  - [ ] User Authentication Settings
+- ZPA
+  - API not released by Zscaler
 
 ## Features
 - Manage Request Sessions to Zscaler API
