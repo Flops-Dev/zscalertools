@@ -108,21 +108,30 @@ class api:
       Adds a new user
     update_user(id, user_object)
       Updates the user information for the specified ID
+    delete_user(id)
+      Deletes the user for the specified ID
     bulk_delete_users(ids=[])
       Bulk delete users up to a maximum of 500 users per request
     
-    
+    Location Management
+    -------------------
     get_locations(search=None, sslScanEnabled=None, xffEnabled=None, authRequired=None, bwEnforced=None, page=None, pageSize=None)
       Gets information on locations
     get_location(id)
       Gets the location information for the specified ID
+    get_sublocations(id, search=None, sslScanEnabled=None, xffEnabled=None, authRequired=None, bwEnforced=None, page=None, pageSize=None, enforceAup=None, enableFirewall=None)
+      Gets the sub-location information for the location with the specified ID. These are the sub-locations associated to the parent location
     add_location(location_object)
       Adds new locations and sub-locations
     get_locations_lite(includeSubLocations=None, includeParentLocations=None, sslScanEnabled=None, search=None, page=None, pageSize=None)
       Gets a name and ID dictionary of locations
     update_location(id, location_object)
       Updates the location and sub-location information for the specified ID
-  
+    delete_location(id)
+      Deletes the location or sub-location for the specified ID
+    buld_delete_locations(ids=[])
+      Bulk delete locations up to a maximum of 100 users per request. The response returns the location IDs that were successfully deleted.
+      
   Custom Methods
   -------
   pull_all_user_data()
@@ -269,6 +278,12 @@ class api:
     return self._handle_response(self.session.put(self._url(api_path), data=data))
 
   @retry(Exception, tries=3)
+  def delete_user(self, id):
+    api_path = '/users/{}'.format(id)
+
+    return self._handle_response(self.session.delete(self._url(api_path)))
+
+  @retry(Exception, tries=3)
   def bulk_delete_users(self, ids=[]):
     api_path = '/users/bulkDelete'
     body = {}
@@ -317,6 +332,32 @@ class api:
     return self._handle_response(self.session.get(self._url(api_path)))
   
   @retry(Exception, tries=3)
+  def get_sublocations(self, id, search=None, sslScanEnabled=None, xffEnabled=None, authRequired=None, bwEnforced=None, enforceAup=None, enableFirewall=None):
+    api_path = '/locations/{}/sublocations?'.format(id)
+    
+    if search:
+      api_path = self._append_url_query(api_path, 'search', search)
+    if sslScanEnabled:
+      api_path = self._append_url_query(api_path, 'sslScanEnabled', sslScanEnabled)
+    if xffEnabled:
+      api_path = self._append_url_query(api_path, 'xffEnabled', xffEnabled)
+    if authRequired:
+      api_path = self._append_url_query(api_path, 'authRequired', authRequired)
+    if bwEnforced:
+      api_path = self._append_url_query(api_path, 'bwEnforced', bwEnforced)
+    if page:
+      api_path = self._append_url_query(api_path, 'page', page)
+    if pageSize:
+      api_path = self._append_url_query(api_path, 'pageSize', pageSize)
+    if enforceAup:
+      api_path = self._append_url_query(api_path, 'enforceAup', enforceAup)
+    if enableFirewall:
+      api_path = self._append_url_query(api_path, 'enableFirewall', enableFirewall)
+
+
+    return self._handle_response(self.session.get(self._url(api_path)))
+  
+  @retry(Exception, tries=3)
   def add_location(self, location_object):
     api_path = '/locations'
     data = json.dumps(location_object)
@@ -336,6 +377,21 @@ class api:
 
     return self._handle_response(self.session.put(self._url(api_path), data=data))
   
+  @retry(Exception, tries=3)
+  def delete_location(self, id):
+    api_path = '/locations/{}'.format(id)
+
+    return self._handle_response(self.session.delete(self._url(api_path), data=data))
+  
+  @retry(Exception, tries=3)
+  def bulk_delete_locations(self, ids=[]):
+    api_path = '/locations/bulkDelete'
+    body = {}
+    body['ids'] = ids
+    data = json.dumps(body)
+    
+    return self._handle_response(self.session.post(self._url(api_path), data=data))
+
   def pull_all_user_data(self):
     logger.info("Zscaler Helper -  Pulling All User/Group Data")
     zscaler_users = self.get_users(pageSize=999999)
