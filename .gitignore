@@ -18,3 +18,4 @@ venv/
 
 # Config
 *.yml
+*.pypirc
