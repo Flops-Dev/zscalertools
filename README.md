@@ -8,10 +8,10 @@ pip install --index-url https://test.pypi.org/simple/ zscalertools
 
 How to use:
 ```
-from zscalertools import zia
-ztoolsinstance = zia.api('admin.zscalerbeta.net', 'test_api@user.com', 'password', 'Apikey')
+import zscalertools
+ztools_zia_api = zscalertools.zia('admin.zscalerbeta.net', 'test_api@user.com', 'password', 'Apikey')
 
-ztoolsinstance.get_users()
+ztools_zia_api.get_users()
 ```
 
   
